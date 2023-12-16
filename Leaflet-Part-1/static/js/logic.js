@@ -1,15 +1,9 @@
-// Get coordinates of USA from geoJSON.io: [ -97.84175240828246, 40.458548345076366]
+// Get coordinates of USA from geoJSON.io: [40.072739193459284,-114.02797966452886]
 
 // Creating our initial map object:
-let myMap = L.map("map").setView([40.458548345076366,-97.84175240828246],5);
+let myMap = L.map("map").setView([40.072739193459284,-114.02797966452886],5);
 
-// Adding a tile layer (the background map image) to our map:
-// We use the addTo() method to add objects to our map.
-// L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-// }).addTo(myMap);
-
-//
+// Adding a tile layer (the grey background) to our map:
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution">CARTO</a>'
 }).addTo(myMap);
@@ -29,12 +23,12 @@ d3.json(url).then(function(response){
 
 // Create getColor function for marker color by depth value
 function getColor(d){
-    return d>= 90 ? markerColor="#ff3300":
-    d>= 70 ? markerColor="#ff9900":
-    d>= 50 ? markerColor="#ffcc66":
-    d>= 30 ? markerColor="#ffcc33":
-    d>= 10 ? markerColor="#ccff66":
-    markerColor="#33ff00"
+    return d>= 90 ? "#FF3300":
+    d>= 70 ? "#FF9900":
+    d>= 50 ? "#FFCC66":
+    d>= 30 ? "#FFCC33":
+    d>= 10 ? "#CCFF66":
+             "#33FF00";
 }
 
 // Circle marker color by depth, size by magnitude
@@ -61,28 +55,18 @@ function createMarker(data){
 
 // Create legend
 var legend = L.control({ position: "bottomright" });
-legend.onAdd = function() {
+legend.onAdd = function(map) {
   var div = L.DomUtil.create("div", "info legend");
-  var limits = geojson.options.limits;
-  var colors = geojson.options.colors;
+  var grades = [-10,10,30,50,70,90];
   var labels = [];
-
-  // Add the minimum and maximum.
-  var legendInfo = "<h1>Population with Children<br />(ages 6-17)</h1>" +
-    "<div class=\"labels\">" +
-      "<div class=\"min\">" + limits[0] + "</div>" +
-      "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
-    "</div>";
-
-  div.innerHTML = legendInfo;
-
-  limits.forEach(function(limit, index) {
-    labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-  });
-
-  div.innerHTML += "<ul>" + labels.join("") + "</ul>";
-  return div;
+  // loop through our density intervals and generate a label with a colored square for each interval
+  for (var i = 0; i < grades.length; i++) {
+    div.innerHTML +=
+        labels.push('<i style="background:'+ getColor(grades[i] + 1) +'"></i> ' + 
+        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+'));    
+    }
+    div.innerHTML = labels.join('');
+return div;
 };
 
-// Adding the legend to the map
 legend.addTo(myMap);
