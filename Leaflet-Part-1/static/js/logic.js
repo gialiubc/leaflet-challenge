@@ -25,8 +25,8 @@ d3.json(url).then(function(response){
 function getColor(d){
     return d>= 90 ? "#FF3300":
     d>= 70 ? "#FF9900":
-    d>= 50 ? "#FFCC66":
-    d>= 30 ? "#FFCC33":
+    d>= 50 ? "#FFCC33":
+    d>= 30 ? "#FFCC66":
     d>= 10 ? "#CCFF66":
              "#33FF00";
 }
@@ -62,10 +62,13 @@ legend.onAdd = function(map) {
   // loop through our density intervals and generate a label with a colored square for each interval
   for (var i = 0; i < grades.length; i++) {
     div.innerHTML +=
-        labels.push('<i style="background:'+ getColor(grades[i] + 1) +'"></i> ' + 
-        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+'));    
+        '<i style="background:'+ getColor(grades[i] + 1) +'"></i> ' + 
+        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+') 
+        // Alternative way:
+        // labels.push('<i style="background:'+ getColor(grades[i] + 1) +'"></i> ' + 
+        // grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+'));   
     }
-    div.innerHTML = labels.join('');
+    // div.innerHTML = labels.join('');
 return div;
 };
 
